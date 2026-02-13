@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Valentine.exe - Priority Task</title>
+    <style>
+        body { 
+            background-color: #fff0f5; 
+            font-family: 'Courier New', Courier, monospace; 
+            text-align: center; 
+            margin: 0; 
+            padding: 20px; 
+            overflow: hidden; /* Fix: Stops him from scrolling down to see the surprise */
+        }
+        .container { 
+            max-width: 600px; 
+            margin: 50px auto; 
+            background: white; 
+            padding: 40px; 
+            border-radius: 20px; 
+            box-shadow: 0 10px 25px rgba(255,182,193,0.5); 
+        }
+        .hidden { display: none; }
+        h1 { color: #ff1493; font-size: 24px; }
+        button { 
+            background-color: #ff69b4; 
+            color: white; 
+            padding: 15px 25px; 
+            font-size: 16px; 
+            border: none; 
+            border-radius: 50px; 
+            cursor: pointer; 
+            margin: 10px; 
+            width: 80%; 
+            transition: 0.3s transform; 
+        }
+        button:hover { transform: scale(1.05); background-color: #ff1493; }
+        #noBtn { position: fixed; width: auto; background-color: #a9a9a9; z-index: 10; }
+        .emoji-display { font-size: 60px; height: 70px; margin-bottom: 20px; }
+        
+        .success-bg { 
+            background-color: #ffb6c1; 
+            position: fixed; 
+            top: 0; 
+            left: 0; 
+            width: 100vw; 
+            height: 100vh; 
+            display: flex; 
+            flex-direction: column; 
+            justify-content: center; 
+            align-items: center; 
+            z-index: 999; /* Fix: Makes sure this covers the whole screen */
+        }
+        .balloon { font-size: 50px; display: inline-block; animation: float 3s infinite ease-in-out; }
+        @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-30px); } }
+    </style>
+</head>
+<body>
+
+    <div id="quiz-box" class="container">
+        <div id="feedback" class="emoji-display"></div>
+        <h1 id="question-text">Loading Quiz...</h1>
+        <div id="options-container"></div>
+    </div>
+
+    <div id="proposal-box" class="container hidden">
+        <h1>Will you be my Valentine? ❤️</h1>
+        <button id="yesBtn" style="width: auto;">YES!</button>
+        <button id="noBtn">No</button>
+    </div>
+
+    <div id="final-page" class="success-bg hidden">
+        <h1 style="font-size: 40px; color: white; text-shadow: 2px 2px #ff69b4; padding: 20px;">I knew it! <br>You're with me forever! 🎈</h1>
+        <div class="balloon-container">
+            <span class="balloon">🎈</span><span class="balloon">💖</span><span class="balloon">🎈</span><span class="balloon">🌸</span>
+        </div>
+    </div>
+
+    <script>
+        const questions = [
+            { q: "When was our first meet?", a: ["Park", "Movie", "Mama ko car"], correct: 2 },
+            { q: "What did you realize when you first saw me?", a: ["Pretty", "Very Pretty", "Girl of my dreams"], correct: 2 },
+            { q: "Do you love me?", a: ["Yes", "Yes", "Yes"], correct: "all" }
+        ];
+
+        let currentStep = 0;
+        const feedback = document.getElementById('feedback');
+
+        function loadStep() {
+            const qData = questions[currentStep];
+            document.getElementById('question-text').innerText = qData.q;
+            const menu = document.getElementById('options-container');
+            menu.innerHTML = '';
+            qData.a.forEach((option, index) => {
+                const btn = document.createElement('button');
+                btn.innerText = option;
+                btn.onclick = () => handleChoice(index);
+                menu.appendChild(btn);
+            });
+        }
+
+        function handleChoice(index) {
+            const qData = questions[currentStep];
+            if (qData.correct === "all" || index === qData.correct) {
+                feedback.innerText = "😘";
+                currentStep++;
+                setTimeout(() => {
+                    feedback.innerText = "";
+                    if (currentStep < questions.length) loadStep();
+                    else showProposal();
+                }, 800);
+            } else {
+                feedback.innerText = "😢";
+                setTimeout(() => { feedback.innerText = ""; }, 800);
+            }
+        }
+
+        function showProposal() {
+            document.getElementById('quiz-box').classList.add('hidden');
+            document.getElementById('proposal-box').classList.remove('hidden');
+        }
+
+        const noBtn = document.getElementById('noBtn');
+        const moveBtn = () => {
+            const x = Math.random() * (window.innerWidth - noBtn.offsetWidth);
+            const y = Math.random() * (window.innerHeight - noBtn.offsetHeight);
+            noBtn.style.left = x + 'px';
+            noBtn.style.top = y + 'px';
+        };
+        noBtn.addEventListener('mouseover', moveBtn);
+        noBtn.addEventListener('touchstart', moveBtn);
+
+        document.getElementById('yesBtn').onclick = () => {
+            document.getElementById('proposal-box').classList.add('hidden');
+            document.getElementById('final-page').classList.remove('hidden');
+        };
+
+        loadStep();
+    </script>
+</body>
+</html>
