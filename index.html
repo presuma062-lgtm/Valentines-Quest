@@ -11,7 +11,8 @@
             text-align: center; 
             margin: 0; 
             padding: 20px; 
-            overflow: hidden; /* Fix: Stops him from scrolling down to see the surprise */
+            overflow: hidden; /* This stops him from scrolling down */
+            height: 100vh;
         }
         .container { 
             max-width: 600px; 
@@ -21,7 +22,7 @@
             border-radius: 20px; 
             box-shadow: 0 10px 25px rgba(255,182,193,0.5); 
         }
-        .hidden { display: none; }
+        .hidden { display: none !important; }
         h1 { color: #ff1493; font-size: 24px; }
         button { 
             background-color: #ff69b4; 
@@ -50,7 +51,7 @@
             flex-direction: column; 
             justify-content: center; 
             align-items: center; 
-            z-index: 999; /* Fix: Makes sure this covers the whole screen */
+            z-index: 999; 
         }
         .balloon { font-size: 50px; display: inline-block; animation: float 3s infinite ease-in-out; }
         @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-30px); } }
